@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BigQuery Release Notes Hub & Social Sharer</title>
+    <meta name="description" content="Stay updated with the latest Google Cloud BigQuery releases. Track features, changes, and deprecations, and share updates directly to Twitter/X.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Favicon placeholder (Google Cloud logo color theme) -->
+    <link rel="icon" type="image/png" href="https://ssl.gstatic.com/images/branding/product/1x/cloud_64dp.png">
+</head>
+<body>
+    <!-- Background Decor -->
+    <div class="bg-gradient-radial"></div>
+    <div class="bg-blur-orb orb-1"></div>
+    <div class="bg-blur-orb orb-2"></div>
+
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="app-header">
+            <div class="logo-area">
+                <svg class="logo-svg" viewBox="0 0 24 24" width="32" height="32">
+                    <path fill="#4285F4" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/>
+                </svg>
+                <div class="brand-text">
+                    <h1 class="title">BigQuery</h1>
+                    <span class="subtitle">Release Notes Tracker</span>
+                </div>
+            </div>
+            
+            <div class="controls-area">
+                <span id="last-updated-time" class="last-updated">Last checked: Loading...</span>
+                <button id="refresh-btn" class="btn btn-primary" aria-label="Refresh release notes">
+                    <svg class="spinner-svg hide" id="btn-spinner" viewBox="0 0 24 24" width="18" height="18">
+                        <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="40 10" stroke-linecap="round"></circle>
+                    </svg>
+                    <svg class="icon-svg" id="btn-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l.73-.73" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Refresh Feed</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Search & Filter Bar -->
+        <section class="filter-section">
+            <div class="search-wrapper">
+                <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="search-input" placeholder="Search release updates (e.g. Vector, JSON, pricing)..." aria-label="Search release notes">
+            </div>
+            
+            <div class="filter-tags" id="type-filters">
+                <button class="filter-tag active" data-type="all">All Updates</button>
+                <button class="filter-tag" data-type="feature"><span class="dot dot-feature"></span>Features</button>
+                <button class="filter-tag" data-type="change"><span class="dot dot-change"></span>Changes</button>
+                <button class="filter-tag" data-type="deprecation"><span class="dot dot-deprecation"></span>Deprecations</button>
+            </div>
+        </section>
+
+        <!-- Main Feed / Content Section -->
+        <main class="main-content">
+            <!-- Loading Skeletons -->
+            <div id="loading-state" class="notes-grid">
+                <!-- 3 Skeleton cards -->
+                <div class="skeleton-card">
+                    <div class="skeleton-header">
+                        <div class="skeleton-shimmer badge-skeleton"></div>
+                        <div class="skeleton-shimmer date-skeleton"></div>
+                    </div>
+                    <div class="skeleton-body">
+                        <div class="skeleton-shimmer line-1"></div>
+                        <div class="skeleton-shimmer line-2"></div>
+                        <div class="skeleton-shimmer line-3"></div>
+                    </div>
+                    <div class="skeleton-footer">
+                        <div class="skeleton-shimmer btn-skeleton"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton-header">
+                        <div class="skeleton-shimmer badge-skeleton"></div>
+                        <div class="skeleton-shimmer date-skeleton"></div>
+                    </div>
+                    <div class="skeleton-body">
+                        <div class="skeleton-shimmer line-1"></div>
+                        <div class="skeleton-shimmer line-2"></div>
+                        <div class="skeleton-shimmer line-3"></div>
+                    </div>
+                    <div class="skeleton-footer">
+                        <div class="skeleton-shimmer btn-skeleton"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton-header">
+                        <div class="skeleton-shimmer badge-skeleton"></div>
+                        <div class="skeleton-shimmer date-skeleton"></div>
+                    </div>
+                    <div class="skeleton-body">
+                        <div class="skeleton-shimmer line-1"></div>
+                        <div class="skeleton-shimmer line-2"></div>
+                        <div class="skeleton-shimmer line-3"></div>
+                    </div>
+                    <div class="skeleton-footer">
+                        <div class="skeleton-shimmer btn-skeleton"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error State -->
+            <div id="error-state" class="error-container hide">
+                <div class="error-icon">⚠️</div>
+                <h2>Failed to Load Release Notes</h2>
+                <p id="error-message">Could not fetch release notes from the Google Cloud feed feed. Please try again.</p>
+                <button id="retry-btn" class="btn btn-secondary">Try Again</button>
+            </div>
+
+            <!-- Feed Content Grid -->
+            <div id="notes-grid" class="notes-grid hide">
+                <!-- Dynamically populated card elements -->
+            </div>
+
+            <!-- Empty Search State -->
+            <div id="empty-state" class="empty-container hide">
+                <div class="empty-icon">🔍</div>
+                <h2>No matching updates found</h2>
+                <p>Try adjusting your keyword search or type filter.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Twitter Composer Slide-up Drawer -->
+    <div id="tweet-drawer" class="tweet-drawer-overlay">
+        <div class="tweet-drawer">
+            <div class="drawer-header">
+                <h3>Share to X / Twitter</h3>
+                <button id="close-drawer-btn" class="close-btn" aria-label="Close share drawer">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="drawer-body">
+                <div class="selected-details">
+                    <span id="drawer-update-type" class="type-badge">Feature</span>
+                    <span id="drawer-update-date" class="update-date">July 01, 2026</span>
+                </div>
+                
+                <label for="tweet-textarea" class="textarea-label">Customize your post summary:</label>
+                <div class="textarea-container">
+                    <textarea id="tweet-textarea" rows="4" placeholder="Craft your perfect tweet..."></textarea>
+                    <div class="textarea-footer">
+                        <span id="char-counter" class="char-counter">0 / 280</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="drawer-footer">
+                <button id="cancel-drawer-btn" class="btn btn-secondary">Cancel</button>
+                <button id="share-tweet-btn" class="btn btn-twitter">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                    <span>Post Update</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main JavaScript -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
